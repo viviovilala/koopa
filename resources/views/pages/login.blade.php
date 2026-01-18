@@ -46,18 +46,24 @@
 </div>
 <h1 class="text-2xl font-bold mb-2">Welcome back</h1>
 <p class="text-sm text-koopa-muted mb-6">Sign in to manage group orders, payments, and drop points.</p>
-<form class="space-y-4">
+@if ($errors->any())
+<div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+{{ $errors->first() }}
+</div>
+@endif
+<form class="space-y-4" method="POST" action="{{ route('login.submit') }}">
+@csrf
 <div>
 <label class="text-xs font-semibold text-koopa-muted uppercase tracking-widest">Email</label>
-<input class="mt-2 w-full rounded-xl border border-koopa-border bg-koopa-surface px-4 py-3" placeholder="you@umkm.id" type="email"/>
+<input class="mt-2 w-full rounded-xl border border-koopa-border bg-koopa-surface px-4 py-3" name="email" placeholder="you@umkm.id" type="email" value="{{ old('email') }}" required/>
 </div>
 <div>
 <label class="text-xs font-semibold text-koopa-muted uppercase tracking-widest">Password</label>
-<input class="mt-2 w-full rounded-xl border border-koopa-border bg-koopa-surface px-4 py-3" placeholder="********" type="password"/>
+<input class="mt-2 w-full rounded-xl border border-koopa-border bg-koopa-surface px-4 py-3" name="password" placeholder="********" type="password" required/>
 </div>
 <div class="flex items-center justify-between text-sm">
 <label class="flex items-center gap-2 text-koopa-muted">
-<input class="rounded border-koopa-border" type="checkbox"/>
+<input class="rounded border-koopa-border" name="remember" type="checkbox"/>
 Remember me
 </label>
 <a class="text-koopa-teal font-semibold" href="#">Forgot password?</a>
@@ -68,7 +74,7 @@ Remember me
 <div class="bg-white border border-koopa-border rounded-2xl p-8 shadow-card">
 <p class="text-xs font-semibold text-koopa-muted uppercase tracking-widest mb-4">Choose your portal</p>
 <div class="space-y-3">
-<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="/groups">
+<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="{{ route('dashboard.umkm') }}">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-koopa-teal">storefront</span>
 <div>
@@ -78,7 +84,7 @@ Remember me
 </div>
 <span class="material-symbols-outlined text-koopa-muted">arrow_forward</span>
 </a>
-<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="/supplier-products">
+<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="{{ route('supplier.products.index') }}">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-koopa-teal">inventory_2</span>
 <div>
@@ -88,7 +94,7 @@ Remember me
 </div>
 <span class="material-symbols-outlined text-koopa-muted">arrow_forward</span>
 </a>
-<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="/dashboard/profitquest">
+<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="{{ route('dashboard.owner') }}">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-koopa-teal">monitoring</span>
 <div>
@@ -98,6 +104,12 @@ Remember me
 </div>
 <span class="material-symbols-outlined text-koopa-muted">arrow_forward</span>
 </a>
+</div>
+<div class="mt-6 text-xs text-koopa-muted">
+<p class="font-semibold text-koopa-text">Demo accounts (seeded)</p>
+<p>UMKM: umkm1@koopa.test / password</p>
+<p>Supplier: supplier@koopa.test / password</p>
+<p>Owner: owner@koopa.test / password</p>
 </div>
 </div>
 </div>

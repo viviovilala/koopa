@@ -1,20 +1,16 @@
-@extends('layouts.koopa')
+@extends('layouts.owner')
 
 @section('title', 'Koopa | Owner Insight Dashboard')
 
 @section('content')
-<div class="flex min-h-screen">
-@include('partials.koopa-sidebar-owner')
-<main class="flex-1 ml-64 min-h-screen">
-@include('partials.koopa-header-owner')
-<div class="p-8 max-w-[1280px] mx-auto space-y-10">
+<div class="space-y-10">
 <section>
 <div class="flex items-end justify-between mb-5 px-1">
 <div>
 <h2 class="text-xl font-bold tracking-tight text-text-main">Active Groups</h2>
 <p class="text-sm text-text-muted">Owner-level decisions for price certainty</p>
 </div>
-<a class="text-xs font-bold text-primary-teal hover:underline flex items-center gap-1 uppercase tracking-wider" href="/groups">View All</a>
+<a class="text-xs font-bold text-primary-teal hover:underline flex items-center gap-1 uppercase tracking-wider" href="{{ route('owner.groups.index') }}">View All</a>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 @forelse ($active_groups as $group)
@@ -27,11 +23,11 @@
 </div>
 <h3 class="font-bold text-text-main mb-1">{{ $group->title }}</h3>
 <p class="text-sm text-text-muted leading-relaxed mb-6">
-Target {{ $group->target_volume }} {{ $group->unit }} • Current {{ $group->current_volume }} {{ $group->unit }}
+Target {{ $group->target_volume }} {{ $group->unit }} - Current {{ $group->current_volume }} {{ $group->unit }}
 </p>
 <div class="mt-auto flex items-center justify-between">
 <span class="text-[11px] font-bold text-primary-teal">{{ $group->dropPoint->name ?? 'No drop point' }}</span>
-<a class="px-4 py-2 bg-primary-teal text-white rounded-lg text-xs font-bold shadow-sm hover:opacity-90 transition-opacity" href="/groups/{{ $group->id }}">View</a>
+<a class="px-4 py-2 bg-primary-teal text-white rounded-lg text-xs font-bold shadow-sm hover:opacity-90 transition-opacity" href="{{ route('owner.groups.show', $group) }}">View</a>
 </div>
 </div>
 @empty
@@ -126,7 +122,5 @@ Held
 </div>
 </div>
 </section>
-</div>
-</main>
 </div>
 @endsection

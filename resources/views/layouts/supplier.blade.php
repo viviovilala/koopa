@@ -34,6 +34,7 @@
 </script>
 </head>
 <body class="bg-koopa-surface text-koopa-text font-sans">
+@php($authUser = Auth::user())
 <div class="flex min-h-screen">
 <aside class="w-72 bg-white border-r border-koopa-border px-6 py-8">
 <div class="flex items-center gap-3 mb-8">
@@ -81,10 +82,20 @@ Settings
 </button>
 <div class="flex items-center gap-3 pl-3 border-l border-koopa-border">
 <div class="text-right">
-<p class="text-sm font-semibold">Alex Chen</p>
+<p class="text-sm font-semibold">{{ $authUser?->display_name ?? $authUser?->name ?? 'Supplier' }}</p>
 <p class="text-[10px] uppercase tracking-widest text-koopa-muted">Supplier Admin</p>
 </div>
-<div class="h-10 w-10 rounded-full bg-koopa-teal text-white flex items-center justify-center">AC</div>
+@if ($authUser?->profile_image_url)
+<div class="h-10 w-10 rounded-full bg-cover bg-center" style="background-image: url('{{ $authUser->profile_image_url }}');"></div>
+@else
+<div class="h-10 w-10 rounded-full bg-koopa-teal text-white flex items-center justify-center">
+{{ strtoupper(substr($authUser?->display_name ?? $authUser?->name ?? 'S', 0, 2)) }}
+</div>
+@endif
+<form method="POST" action="{{ route('logout') }}">
+@csrf
+<button class="text-xs font-semibold text-koopa-muted hover:text-koopa-teal" type="submit">Logout</button>
+</form>
 </div>
 </div>
 </header>

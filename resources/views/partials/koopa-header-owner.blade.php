@@ -23,11 +23,22 @@
             </div>
         </div>
     </div>
+    @php($authUser = Auth::user())
     <div class="flex items-center gap-5">
         <button class="relative p-2 rounded-xl border border-border-color bg-white text-text-muted hover:bg-bg-main transition-colors">
             <span class="material-symbols-outlined text-[22px]">notifications</span>
             <span class="absolute top-1.5 right-1.5 size-2 bg-alert-orange rounded-full border-2 border-white"></span>
         </button>
-        <div class="h-9 w-9 rounded-full border-2 border-brand-purple bg-cover bg-center shadow-sm" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCfJOxPfdiBoN6itATEgBs4li_yXpiujDbQKKkqC1U4v1DzKu6YbUcmXzAQEVG_yjFLm6U9ZohuKrTXy2tebFlfBLmJ88g_r9gIIChRVYIQcmsPZLuAdZpg35bpRjmyOkQ4-J9yX4L5UDcmXUnMIkFR3Zgedl8bNgQI6itQ6mUCSjGjLj18fVXRtYsyezD-m3LNlEvjfp7Nj8p1RiP98d7wxxTZY3w4B70NRBPsRX46qz2rkh-G5Ve-YHOhoTEyd_EyZ5tvuFMjRTsB')"></div>
+        @if ($authUser?->profile_image_url)
+        <div class="h-9 w-9 rounded-full border-2 border-brand-purple bg-cover bg-center shadow-sm" style="background-image: url('{{ $authUser->profile_image_url }}');"></div>
+        @else
+        <div class="h-9 w-9 rounded-full border-2 border-brand-purple bg-brand-purple text-white flex items-center justify-center text-xs font-bold">
+            {{ strtoupper(substr($authUser?->display_name ?? $authUser?->name ?? 'O', 0, 2)) }}
+        </div>
+        @endif
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="text-[10px] font-bold uppercase text-text-muted hover:text-brand-purple" type="submit">Logout</button>
+        </form>
     </div>
 </header>

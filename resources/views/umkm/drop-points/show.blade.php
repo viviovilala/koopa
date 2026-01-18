@@ -55,9 +55,9 @@ Order History
 <span class="material-symbols-outlined">group</span>
 Member Directory
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/dashboard/profitquest">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/dashboard/qday">
 <span class="material-symbols-outlined">monitoring</span>
-Analytics
+Dashboard
 </a>
 </nav>
 <div class="border-t border-koopa-border pt-4 text-sm text-koopa-muted space-y-2">

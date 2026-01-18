@@ -20,7 +20,7 @@ class KoopaSeeder extends Seeder
      */
     public function run(): void
     {
-        $owner = User::firstOrCreate(
+        $owner = User::updateOrCreate(
             ['email' => 'owner@koopa.test'],
             [
                 'name' => 'Koopa Owner',
@@ -33,7 +33,7 @@ class KoopaSeeder extends Seeder
             ]
         );
 
-        $supplier = User::firstOrCreate(
+        $supplier = User::updateOrCreate(
             ['email' => 'supplier@koopa.test'],
             [
                 'name' => 'Alex Supplier',
@@ -46,7 +46,7 @@ class KoopaSeeder extends Seeder
             ]
         );
 
-        $umkm1 = User::firstOrCreate(
+        $umkm1 = User::updateOrCreate(
             ['email' => 'umkm1@koopa.test'],
             [
                 'name' => 'Bistro Serenity',
@@ -59,7 +59,7 @@ class KoopaSeeder extends Seeder
             ]
         );
 
-        $umkm2 = User::firstOrCreate(
+        $umkm2 = User::updateOrCreate(
             ['email' => 'umkm2@koopa.test'],
             [
                 'name' => 'Cafe Horizon',
@@ -142,7 +142,7 @@ class KoopaSeeder extends Seeder
             unset($productData['tiers']);
             $productData['supplier_id'] = $supplier->id;
 
-            $product = Product::firstOrCreate(
+            $product = Product::updateOrCreate(
                 ['name' => $productData['name']],
                 $productData
             );

@@ -40,6 +40,7 @@
 </div>
 <div class="flex items-center gap-3">
 <input class="w-48 rounded-xl border-slate-200 focus:ring-accent focus:border-accent" name="model" placeholder="gpt-4o-mini"/>
+<input class="w-28 rounded-xl border-slate-200 focus:ring-accent focus:border-accent" name="temperature" placeholder="0.3"/>
 <button class="px-5 py-2.5 bg-accent text-white rounded-xl font-bold" type="submit">Send</button>
 </div>
 </form>
@@ -60,6 +61,7 @@
         const payload = {
             message: formData.get('message'),
             model: formData.get('model') || 'gpt-4o-mini',
+            temperature: formData.get('temperature') || 0.3,
         };
 
         try {
@@ -70,17 +72,16 @@
             });
             const data = await response.json();
             if (!response.ok) {
-                output.textContent = JSON.stringify(data, null, 2);
+                output.textContent = `Error ${response.status}\n${JSON.stringify(data, null, 2)}`;
                 return;
             }
             output.textContent = data.output || 'No output.';
         } catch (error) {
-            output.textContent = 'Request failed.';
+            output.textContent = 'Request failed. Check API key and server logs.';
         }
     });
 </script>
 </body>
 </html>
-
 
 
