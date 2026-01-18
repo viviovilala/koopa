@@ -68,7 +68,7 @@ Remember me
 <div class="bg-white border border-koopa-border rounded-2xl p-8 shadow-card">
 <p class="text-xs font-semibold text-koopa-muted uppercase tracking-widest mb-4">Choose your portal</p>
 <div class="space-y-3">
-<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="/dashboard/qday">
+<a class="w-full border border-koopa-border rounded-xl px-4 py-3 flex items-center justify-between hover:bg-koopa-surface" href="/groups">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-koopa-teal">storefront</span>
 <div>

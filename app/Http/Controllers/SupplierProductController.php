@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\PriceLadder;
 use App\Models\Product;
+use App\Support\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class SupplierProductController extends Controller
 {
@@ -14,7 +16,13 @@ class SupplierProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('priceLadders')->latest()->get();
+        $supplierId = CurrentUser::id();
+        $products = Product::with('priceLadders')
+            ->when($supplierId, function ($query, $supplierId) {
+                $query->where('supplier_id', $supplierId);
+            })
+            ->latest()
+            ->get();
 
         return view('supplier.products.index', compact('products'));
     }
@@ -35,10 +43,11 @@ class SupplierProductController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'sku' => ['nullable', 'string', 'max:64'],
+            'image_url' => ['nullable', 'string', 'max:2048'],
             'category' => ['nullable', 'string', 'max:100'],
             'moq' => ['required', 'integer', 'min:0'],
             'unit' => ['required', 'string', 'max:16'],
-            'status' => ['required', 'string', 'max:16'],
+            'status' => ['required', 'string', 'max:16', Rule::in(['draft', 'active'])],
             'currency' => ['required', 'string', 'max:8'],
             'service_area' => ['nullable', 'string'],
             'tiers' => ['array'],
@@ -47,11 +56,14 @@ class SupplierProductController extends Controller
         ]);
 
         $serviceArea = $this->normalizeServiceArea($validated['service_area'] ?? null);
+        $supplierId = CurrentUser::id();
 
-        DB::transaction(function () use ($validated, $serviceArea) {
+        DB::transaction(function () use ($validated, $serviceArea, $supplierId) {
             $product = Product::create([
+                'supplier_id' => $supplierId,
                 'name' => $validated['name'],
                 'sku' => $validated['sku'] ?? null,
+                'image_url' => $validated['image_url'] ?? null,
                 'category' => $validated['category'] ?? null,
                 'moq' => $validated['moq'],
                 'unit' => $validated['unit'],
@@ -71,7 +83,12 @@ class SupplierProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('priceLadders')->findOrFail($id);
+        $supplierId = CurrentUser::id();
+        $product = Product::with('priceLadders')
+            ->when($supplierId, function ($query, $supplierId) {
+                $query->where('supplier_id', $supplierId);
+            })
+            ->findOrFail($id);
 
         return view('supplier.products.show', compact('product'));
     }
@@ -81,7 +98,12 @@ class SupplierProductController extends Controller
      */
     public function edit(string $id)
     {
-        $product = Product::with('priceLadders')->findOrFail($id);
+        $supplierId = CurrentUser::id();
+        $product = Product::with('priceLadders')
+            ->when($supplierId, function ($query, $supplierId) {
+                $query->where('supplier_id', $supplierId);
+            })
+            ->findOrFail($id);
 
         return view('supplier.products.edit', compact('product'));
     }
@@ -91,15 +113,19 @@ class SupplierProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $product = Product::findOrFail($id);
+        $supplierId = CurrentUser::id();
+        $product = Product::when($supplierId, function ($query, $supplierId) {
+            $query->where('supplier_id', $supplierId);
+        })->findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'sku' => ['nullable', 'string', 'max:64'],
+            'image_url' => ['nullable', 'string', 'max:2048'],
             'category' => ['nullable', 'string', 'max:100'],
             'moq' => ['required', 'integer', 'min:0'],
             'unit' => ['required', 'string', 'max:16'],
-            'status' => ['required', 'string', 'max:16'],
+            'status' => ['required', 'string', 'max:16', Rule::in(['draft', 'active'])],
             'currency' => ['required', 'string', 'max:8'],
             'service_area' => ['nullable', 'string'],
             'tiers' => ['array'],
@@ -113,6 +139,7 @@ class SupplierProductController extends Controller
             $product->update([
                 'name' => $validated['name'],
                 'sku' => $validated['sku'] ?? null,
+                'image_url' => $validated['image_url'] ?? null,
                 'category' => $validated['category'] ?? null,
                 'moq' => $validated['moq'],
                 'unit' => $validated['unit'],
@@ -132,7 +159,10 @@ class SupplierProductController extends Controller
      */
     public function destroy(string $id)
     {
-        $product = Product::findOrFail($id);
+        $supplierId = CurrentUser::id();
+        $product = Product::when($supplierId, function ($query, $supplierId) {
+            $query->where('supplier_id', $supplierId);
+        })->findOrFail($id);
         $product->delete();
 
         return redirect()->route('supplier.products.index')->with('status', 'Product deleted.');

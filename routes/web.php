@@ -8,7 +8,7 @@ Route::get('/', [DashboardController::class, 'qday']);
 Route::get('/dashboard/qday', [DashboardController::class, 'qday']);
 Route::get('/dashboard/profitquest', [DashboardController::class, 'owner']);
 Route::get('/price-ladder', [DashboardController::class, 'priceLadder']);
-Route::get('/drop-points', [DashboardController::class, 'dropPoints']);
+Route::view('/drop-points-ui', 'pages.drop-points');
 Route::get('/escrow-fees', [DashboardController::class, 'escrowFees']);
 Route::view('/marketplace', 'pages.marketplace');
 Route::view('/group-detail', 'pages.group-detail');
@@ -31,13 +31,6 @@ Route::get('/my-orders', function () {
         'description' => 'Review pledged quantities, escrow status, and pickup schedules.',
     ]);
 });
-Route::get('/invoices', function () {
-    return view('pages.umkm-placeholder', [
-        'title' => 'Invoices',
-        'eyebrow' => 'Billing',
-        'description' => 'Access invoices generated after group cut-off and escrow payment.',
-    ]);
-});
 Route::get('/settings', function () {
     return view('pages.umkm-placeholder', [
         'title' => 'Settings',
@@ -50,6 +43,13 @@ Route::get('/preferences', function () {
         'title' => 'Preferences',
         'eyebrow' => 'Marketplace',
         'description' => 'Update category interests and preferred suppliers.',
+    ]);
+});
+Route::get('/help-center', function () {
+    return view('pages.umkm-placeholder', [
+        'title' => 'Help Center',
+        'eyebrow' => 'Support',
+        'description' => 'Access support resources and contact Koopa team.',
     ]);
 });
 Route::get('/group-dynamics', function () {
@@ -66,6 +66,18 @@ Route::get('/saved-lists', function () {
         'description' => 'Review items you saved for upcoming group buys.',
     ]);
 });
+Route::resource('/drop-points', \App\Http\Controllers\DropPointController::class)
+    ->names('drop-points');
+Route::resource('/groups', \App\Http\Controllers\GroupController::class)
+    ->names('groups');
+Route::resource('/group-members', \App\Http\Controllers\GroupMemberController::class)
+    ->names('group-members');
+Route::resource('/orders', \App\Http\Controllers\OrderController::class)
+    ->names('orders');
+Route::resource('/escrow-payments', \App\Http\Controllers\EscrowPaymentController::class)
+    ->names('escrow-payments');
+Route::resource('/invoices', \App\Http\Controllers\InvoiceController::class)
+    ->names('invoices');
 Route::get('/supplier-dashboard', function () {
     return view('pages.supplier-placeholder', [
         'title' => 'Dashboard',

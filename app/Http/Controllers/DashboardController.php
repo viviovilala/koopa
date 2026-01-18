@@ -2,52 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EscrowPayment;
+use App\Models\Group;
+use App\Models\Order;
+use App\Support\CurrentUser;
+
 class DashboardController extends Controller
 {
     public function qday()
     {
-        $signal = [
-            'volume_percent' => 62,
-            'tier' => 'Tier 2',
-            'tier_drop_at' => 70,
-            'savings_min' => 'Rp700k',
-            'savings_max' => 'Rp1M',
-        ];
+        $currentUserId = CurrentUser::id();
+        $groups = Group::with('dropPoint')
+            ->when($currentUserId, function ($query, $currentUserId) {
+                $query->where('leader_id', $currentUserId)
+                    ->orWhereHas('members', function ($memberQuery) use ($currentUserId) {
+                        $memberQuery->where('member_id', $currentUserId);
+                    });
+            })
+            ->orderByDesc('cut_off_at')
+            ->limit(5)
+            ->get();
+
+        $pendingOrders = Order::with('group')
+            ->where('status', 'pending')
+            ->when($currentUserId, function ($query, $currentUserId) {
+                $query->where('member_id', $currentUserId);
+            })
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        $paidOrders = Order::with('group')
+            ->where('status', 'paid')
+            ->when($currentUserId, function ($query, $currentUserId) {
+                $query->where('member_id', $currentUserId);
+            })
+            ->latest()
+            ->limit(2)
+            ->get();
+
+        $escrowHeldCount = EscrowPayment::where('status', 'held')
+            ->when($currentUserId, function ($query, $currentUserId) {
+                $query->whereHas('order', function ($orderQuery) use ($currentUserId) {
+                    $orderQuery->where('member_id', $currentUserId);
+                });
+            })
+            ->count();
 
         $metrics = [
-            'total_volume' => 1240,
-            'group_count' => 4,
-            'cutoff_hours' => 3,
-            'cutoff_minutes' => 12,
-            'cutoff_progress' => 70,
-            'escrow_paid' => 86,
-            'escrow_pending' => 3,
+            'total_savings' => Order::when($currentUserId, function ($query, $currentUserId) {
+                $query->where('member_id', $currentUserId);
+            })->sum('total_amount') * 0.02,
+            'active_groups' => Group::whereIn('status', ['open', 'locked'])
+                ->when($currentUserId, function ($query, $currentUserId) {
+                    $query->where('leader_id', $currentUserId)
+                        ->orWhereHas('members', function ($memberQuery) use ($currentUserId) {
+                            $memberQuery->where('member_id', $currentUserId);
+                        });
+                })
+                ->count(),
+            'pending_actions' => $pendingOrders->count() + $escrowHeldCount,
         ];
 
-        return view('pages.dashboard-qday', [
-            'signal' => $signal,
+        return view('umkm.dashboard', [
+            'groups' => $groups,
+            'pendingOrders' => $pendingOrders,
+            'paidOrders' => $paidOrders,
             'metrics' => $metrics,
         ]);
     }
 
     public function owner()
     {
+        $activeGroups = Group::with('dropPoint')
+            ->whereIn('status', ['open', 'locked'])
+            ->orderByDesc('cut_off_at')
+            ->limit(3)
+            ->get();
+
+        $totalVolume = Group::sum('current_volume');
+        $orderVolume = Order::sum('total_amount');
+        $escrowHeld = EscrowPayment::where('status', 'held')->sum('amount');
+
         $owner = [
-            'near_cutoff' => 3,
-            'savings_health' => 78,
-            'savings_vs_single' => 18,
-            'savings_delta' => 2.4,
-            'group_volume_value' => 'Rp12.4M',
-            'group_volume_delta' => 6,
-            'price_certainty' => 82,
-            'price_certainty_delta' => 5,
-            'on_time_delivery' => 96,
-            'on_time_delta' => 1,
+            'active_groups' => $activeGroups,
+            'total_volume' => $totalVolume,
+            'order_volume' => $orderVolume,
+            'escrow_held' => $escrowHeld,
+            'price_certainty' => $totalVolume > 0 ? 85 : 72,
+            'on_time_delivery' => 94,
         ];
 
-        return view('pages.dashboard-profitquest', [
-            'owner' => $owner,
-        ]);
+        return view('pages.dashboard-profitquest', $owner);
     }
 
     public function priceLadder()

@@ -45,9 +45,13 @@
 </div>
 </div>
 <nav class="space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#e8f3f3] text-koopa-teal font-semibold" href="/dashboard/qday">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#e8f3f3] text-koopa-teal font-semibold" href="/groups">
 <span class="material-symbols-outlined">group</span>
 My Groups
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/group-members">
+<span class="material-symbols-outlined">group_add</span>
+Members
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/marketplace">
 <span class="material-symbols-outlined">storefront</span>
@@ -65,9 +69,17 @@ Saved Lists
 <span class="material-symbols-outlined">local_shipping</span>
 Drop Points
 </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/orders">
+<span class="material-symbols-outlined">shopping_bag</span>
+Orders
+</a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/invoices">
 <span class="material-symbols-outlined">receipt_long</span>
 Invoices
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/escrow-payments">
+<span class="material-symbols-outlined">account_balance</span>
+Escrow
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-koopa-muted hover:bg-koopa-surface" href="/preferences">
 <span class="material-symbols-outlined">tune</span>

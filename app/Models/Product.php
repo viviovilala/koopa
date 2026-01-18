@@ -10,6 +10,7 @@ class Product extends Model
         'supplier_id',
         'name',
         'sku',
+        'image_url',
         'category',
         'moq',
         'unit',
